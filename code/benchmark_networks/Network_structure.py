@@ -1,5 +1,5 @@
 import tensorflow as tf
-from tensorflow.keras import datasets, layers, models, Input, Sequential
+from tensorflow.keras import layers, Input, Sequential
 
 # Author: Haoming Zhang
 

@@ -50,17 +50,17 @@ def train_step(model, noiseEEG_batch, EEG_batch, optimizer , denoise_network, ba
 
     return  M_loss,  mse_grads[0]  #每一条EEG的loss从此输出
 
-def test_step(model, noiseEEG_test, EEG_test):
-    """
+def test_step(model, noiseEEG_test, EEG_test, denoise_network, datanum):
+    # this function is updated by WL
     if denoise_network == 'fcNN':
         noiseEEG_test = tf.reshape(noiseEEG_test, [1,datanum])
     else:
         noiseEEG_test = tf.reshape(noiseEEG_test, [1,datanum,1])
     
     EEG_test=tf.reshape(EEG_test, [1,datanum,1])
-    """
+    
     denoiseoutput_test = model(noiseEEG_test)
-    #denoiseoutput_test = tf.reshape(denoiseoutput_test, [1,datanum,1]) 
+    denoiseoutput_test = tf.reshape(denoiseoutput_test, [1,datanum,1]) 
     loss = denoise_loss_mse(denoiseoutput_test, EEG_test)
     #loss_rrmset = denoise_loss_rrmset(denoiseoutput_test, EEG_test)
 
@@ -80,6 +80,8 @@ def train(model, noiseEEG,EEG, noiseEEG_val, EEG_val, epochs, batch_size,optimiz
     # current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     train_log_dir = result_location +'/'+foldername +'/'+ train_num + '/train'
     val_log_dir = result_location +'/'+foldername +'/'+ train_num + '/test'
+    if not os.path.isdir(train_log_dir): os.makedirs(train_log_dir) #added by WL
+    if not os.path.isdir(val_log_dir): os.makedirs(val_log_dir) #added by WL
     train_summary_writer = tf.summary.create_file_writer(train_log_dir)
     val_summary_writer = tf.summary.create_file_writer(val_log_dir)
 
@@ -125,7 +127,7 @@ def train(model, noiseEEG,EEG, noiseEEG_val, EEG_val, epochs, batch_size,optimiz
 
         # calculate mse loss for validation set
         #denoiseoutput, val_mse, loss_rrmset = test_step(model, noiseEEG_val, EEG_val)
-        denoiseoutput, val_mse = test_step(model, noiseEEG_val, EEG_val)
+        denoiseoutput, val_mse = test_step(model, noiseEEG_val, EEG_val, denoise_network, datanum)
 
         #store validation history
         val_mse_history.append(val_mse) 
