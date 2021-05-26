@@ -82,11 +82,7 @@ else:
   print('NN name arror')
 
 
-
-def newmethod238():
-  return train
-
-saved_model, history = newmethod238()(model, noiseEEG_train, EEG_train, noiseEEG_val, EEG_val, 
+saved_model, history = train(model, noiseEEG_train, EEG_train, noiseEEG_val, EEG_val, 
                       epochs, batch_size,optimizer, denoise_network, 
                       result_location, foldername , train_num = str(i))
 

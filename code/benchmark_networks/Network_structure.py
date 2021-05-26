@@ -46,7 +46,7 @@ def RNN_lstm(datanum):
 def simple_CNN(datanum):
   model = tf.keras.Sequential()
 
-  model.add(layers.Conv1D(64, 3, strides=1, padding='same',input_shape=[ datanum, 1]))
+  model.add(layers.Conv1D(64, 3, strides=1, padding='same', input_shape= (datanum, 1)))
   model.add(layers.BatchNormalization())
   model.add(layers.ReLU())
   model.add(layers.Dropout(0.3))

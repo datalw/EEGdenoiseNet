@@ -1,16 +1,10 @@
-import tensorflow as tf
-import numpy as np
-import os
-from tensorflow import keras
-from tensorflow.keras import layers,Sequential
+from tensorflow.keras import layers
 from tensorflow.keras.models import *
 from tensorflow.keras.layers import *
 from tensorflow.keras.optimizers import *
-from tensorflow.keras.callbacks import ModelCheckpoint, LearningRateScheduler
-from tensorflow.keras import backend as keras
 
-def Novel_CNN(input_size = ( 1024, 1)):
-    inputs = Input(input_size)
+def Novel_CNN(datanum):
+    inputs = Input((datanum, 1))
     conv1 = layers.Conv1D(32, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(inputs)
     conv1 = layers.Conv1D(32, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv1)
     pool1 = AveragePooling1D(pool_size= 2)(conv1)
@@ -52,3 +46,4 @@ def Novel_CNN(input_size = ( 1024, 1)):
     model.summary()
     return model
 
+mymodel = Novel_CNN(1024)

@@ -51,9 +51,17 @@ def train_step(model, noiseEEG_batch, EEG_batch, optimizer , denoise_network, ba
     return  M_loss,  mse_grads[0]  #每一条EEG的loss从此输出
 
 def test_step(model, noiseEEG_test, EEG_test):
-
+    """
+    if denoise_network == 'fcNN':
+        noiseEEG_test = tf.reshape(noiseEEG_test, [1,datanum])
+    else:
+        noiseEEG_test = tf.reshape(noiseEEG_test, [1,datanum,1])
+    
+    EEG_test=tf.reshape(EEG_test, [1,datanum,1])
+    """
     denoiseoutput_test = model(noiseEEG_test)
-    loss = denoise_loss_mse(EEG_test, denoiseoutput_test)
+    #denoiseoutput_test = tf.reshape(denoiseoutput_test, [1,datanum,1]) 
+    loss = denoise_loss_mse(denoiseoutput_test, EEG_test)
     #loss_rrmset = denoise_loss_rrmset(denoiseoutput_test, EEG_test)
 
     return denoiseoutput_test, loss#, loss_rrmset
