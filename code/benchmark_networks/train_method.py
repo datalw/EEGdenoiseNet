@@ -1,9 +1,5 @@
 import tensorflow as tf
-from tensorflow.keras import datasets, layers, models
-import matplotlib.pyplot as plt
-import numpy as np
 import time
-from functools import partial
 from tqdm import tqdm
 from IPython.display import clear_output 
 from data_prepare import *
@@ -56,11 +52,11 @@ def train_step(model, noiseEEG_batch, EEG_batch, optimizer , denoise_network, ba
 
 def test_step(model, noiseEEG_test, EEG_test):
 
-  denoiseoutput_test = model(noiseEEG_test)
-  loss = denoise_loss_mse(EEG_test, denoiseoutput_test)
-  #loss_rrmset = denoise_loss_rrmset(denoiseoutput_test, EEG_test)
+    denoiseoutput_test = model(noiseEEG_test)
+    loss = denoise_loss_mse(EEG_test, denoiseoutput_test)
+    #loss_rrmset = denoise_loss_rrmset(denoiseoutput_test, EEG_test)
 
-  return denoiseoutput_test, loss#, loss_rrmset
+    return denoiseoutput_test, loss#, loss_rrmset
 
 
 def train(model, noiseEEG,EEG, noiseEEG_val, EEG_val, epochs, batch_size,optimizer, denoise_network, result_location, foldername, train_num):
@@ -98,7 +94,7 @@ def train(model, noiseEEG,EEG, noiseEEG_val, EEG_val, epochs, batch_size,optimiz
                 else:
                     noiseEEG_batch,EEG_batch =  noiseEEG[batch_size*n_batch : batch_size*(n_batch+1)] , EEG[batch_size*n_batch : batch_size*(n_batch+1)]
 
-                mse_loss_batch, mse_grads_batch = train_step(model, noiseEEG_batch,EEG_batch, optimizer, denoise_network, batch_size , datanum)
+                mse_loss_batch, mse_grads_batch = train_step(model, noiseEEG_batch, EEG_batch, optimizer, denoise_network, batch_size , datanum)
 
                 # convert variables to usable format
                 mse_grads_batch = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.square(mse_grads_batch)))).numpy()
