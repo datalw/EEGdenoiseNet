@@ -52,15 +52,13 @@ def train_step(model, noiseEEG_batch, EEG_batch, optimizer , denoise_network, ba
 
 def test_step(model, noiseEEG_test, EEG_test, denoise_network, datanum):
     # this function is updated by WL
-    if denoise_network == 'fcNN':
-        noiseEEG_test = tf.reshape(noiseEEG_test, [1,datanum])
-    else:
-        noiseEEG_test = tf.reshape(noiseEEG_test, [1,datanum,1])
+    if denoise_network != 'fcNN':
+        noiseEEG_test = tf.reshape(noiseEEG_test, [noiseEEG_test.shape[0],datanum,1])
     
-    EEG_test=tf.reshape(EEG_test, [1,datanum,1])
+    EEG_test=tf.reshape(EEG_test, [EEG_test.shape[0],datanum,1])
     
     denoiseoutput_test = model(noiseEEG_test)
-    denoiseoutput_test = tf.reshape(denoiseoutput_test, [1,datanum,1]) 
+    denoiseoutput_test = tf.reshape(denoiseoutput_test, [denoiseoutput_test.shape[0],datanum,1]) 
     loss = denoise_loss_mse(denoiseoutput_test, EEG_test)
     #loss_rrmset = denoise_loss_rrmset(denoiseoutput_test, EEG_test)
 
