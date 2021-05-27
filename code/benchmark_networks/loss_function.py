@@ -1,7 +1,4 @@
 import tensorflow as tf
-
-
-
 ################################# loss functions ##########################################################
 
 def denoise_loss_mse(denoise, clean):      

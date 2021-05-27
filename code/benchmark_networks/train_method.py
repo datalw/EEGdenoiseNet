@@ -6,10 +6,8 @@ from data_prepare import *
 from Network_structure import *
 from loss_function import *
 import os  
-import math
-import datetime
 
-# Author: Haoming Zhang
+# Author: Haoming Zhang # Adapted Version: Lu Wang
 # Here is the part of denoiseNet training process
 
 @tf.function
@@ -41,7 +39,7 @@ def train_step(model, noiseEEG_batch, EEG_batch, optimizer , denoise_network, ba
             M_loss += m_loss
 
     
-        M_loss = M_loss / float(noiseEEG_batch.shape[0]) 
+        M_loss = M_loss / float(noiseEEG_batch.shape[0]) # WL: is tensor
         
         # calculate gradient
         mse_grads = loss_tape.gradient(M_loss, model.trainable_variables)
@@ -59,14 +57,16 @@ def test_step(model, noiseEEG_test, EEG_test, denoise_network, datanum):
     
     denoiseoutput_test = model(noiseEEG_test)
     denoiseoutput_test = tf.reshape(denoiseoutput_test, [denoiseoutput_test.shape[0],datanum,1]) 
-    loss = denoise_loss_mse(denoiseoutput_test, EEG_test)
+    loss = denoise_loss_mse(denoiseoutput_test, EEG_test) # wL: loss here is not a float but tensor
     #loss_rrmset = denoise_loss_rrmset(denoiseoutput_test, EEG_test)
-
+    
     return denoiseoutput_test, loss#, loss_rrmset
 
 
 def train(model, noiseEEG,EEG, noiseEEG_val, EEG_val, epochs, batch_size,optimizer, denoise_network, result_location, foldername, train_num):
 
+    # WL: initialize a model
+    saved_model = None
     # setup history variables and save history in a npy film
     history = {}
     history['grads'], history['loss']= {}, {}
@@ -78,13 +78,14 @@ def train(model, noiseEEG,EEG, noiseEEG_val, EEG_val, epochs, batch_size,optimiz
     # current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     train_log_dir = result_location +'/'+foldername +'/'+ train_num + '/train'
     val_log_dir = result_location +'/'+foldername +'/'+ train_num + '/test'
-    if not os.path.isdir(train_log_dir): os.makedirs(train_log_dir) #added by WL
-    if not os.path.isdir(val_log_dir): os.makedirs(val_log_dir) #added by WL
+    #if not os.path.isdir(train_log_dir): os.makedirs(train_log_dir) #added by WL # update: not needed, create_file_writer will do it automatically
+    #if not os.path.isdir(val_log_dir): os.makedirs(val_log_dir) #added by WL  # update: not needed, create_file_writer will do it automatically
     train_summary_writer = tf.summary.create_file_writer(train_log_dir)
     val_summary_writer = tf.summary.create_file_writer(val_log_dir)
 
-    batch_num = math.ceil(noiseEEG.shape[0]/batch_size)
-    
+    #batch_num = math.ceil(noiseEEG.shape[0]/batch_size)
+    batch_num = 1 #WL: only for debugging
+
     datanum = noiseEEG.shape[1]
     for epoch in range(epochs):
         start = time.time()
@@ -125,7 +126,7 @@ def train(model, noiseEEG,EEG, noiseEEG_val, EEG_val, epochs, batch_size,optimiz
 
         # calculate mse loss for validation set
         #denoiseoutput, val_mse, loss_rrmset = test_step(model, noiseEEG_val, EEG_val)
-        denoiseoutput, val_mse = test_step(model, noiseEEG_val, EEG_val, denoise_network, datanum)
+        _, val_mse = test_step(model, noiseEEG_val, EEG_val, denoise_network, datanum)
 
         #store validation history
         val_mse_history.append(val_mse) 
@@ -141,6 +142,9 @@ def train(model, noiseEEG,EEG, noiseEEG_val, EEG_val, epochs, batch_size,optimiz
             path = os.path.join(result_location, foldername, train_num, "denoise_model")
             tf.keras.models.save_model(model, path)
             print('Best model has been saved')
+        
+        if saved_model is None:
+            print("Model not saved, hence: None.")
 
         print ('Epoch #: {}/{}, Time taken: {} secs,\n Grads: mse= {},\n Losses: train_mse= {}, val_mse={}'\
                      .format(epoch+1,epochs,time.time()-start , mse_grads,  train_mse, val_mse))

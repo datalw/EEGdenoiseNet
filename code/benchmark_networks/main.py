@@ -97,10 +97,13 @@ saved_model, history = train(model, noiseEEG_train, EEG_train, noiseEEG_val, EEG
 # save signal
 save_eeg(saved_model, result_location, foldername, save_train, save_vali, save_test, 
                     noiseEEG_train, EEG_train, noiseEEG_val, EEG_val, noiseEEG_test, EEG_test, 
-                    train_num = str(i), denoise_network, datanum)
+                    str(i), denoise_network, datanum)
+if not os.path.exists(result_location +'/'+  foldername + '/' +  str(i) + '/' +'nn_output'):
+  os.makedirs(result_location +'/'+  foldername + '/' +  str(i) + '/'+ 'nn_output'   )
 np.save(result_location +'/'+ foldername + '/'+ str(i)  +'/'+ "nn_output" + '/'+ 'loss_history.npy', history)
 
 #%%
 #save model
-path = os.path.join(result_location, foldername, str(i+1), "denoise_model")
-tf.keras.models.save_model(saved_model, path)
+if saved_model is not None:
+  path = os.path.join(result_location, foldername, str(i), "denoise_model")
+  tf.keras.models.save_model(saved_model, path)
