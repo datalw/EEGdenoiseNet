@@ -16,14 +16,14 @@ from Novel_CNN import *
 # Here is the main part of the denoising neurl network, We can adjust all the parameter in the user-defined area.
 #####################################################自定义 user-defined ########################################################
 #%%
-epochs = 1#50    # training epoch
+epochs = 50    # training epoch
 batch_size  = 40    # training batch size
 combin_num = 10    # combin EEG and noise ? times
 denoise_network = 'Novel_CNN'    # fcNN & Simple_CNN & Complex_CNN & RNN_lstm  & Novel_CNN 
 noise_type = 'EMG'
 
-result_location = r'E:/GoogleDriveBB/Program/EEGdenoiseNet/saved models/'     #  Where to export network results   ############ change it to your own location #########
-foldername = '50_40_10_SCNN_EMG'            # the name of the target folder (should be change when we want to train a new network)
+result_location = r'/home/azureuser/cloudfiles/code/Users/lu.l.wang/EEGdenoiseNet/saved models/'     #  Where to export network results   ############ change it to your own location #########
+foldername = '50_40_10_NCNN_EMG'            # the name of the target folder (should be change when we want to train a new network)
 os.environ['CUDA_VISIBLE_DEVICES']='0'
 save_train = True
 save_vali = True
@@ -51,7 +51,7 @@ denoiseNN = tf.keras.models.load_model(path)
 #%%
 #################################################### 数据输入 Import data #####################################################
 
-file_location = 'E:/GoogleDriveBB/Program/EEGdenoiseNet/data/'                    ############ change it to your own location #########
+file_location = '/home/azureuser/cloudfiles/code/Users/lu.l.wang/EEGdenoiseNet/data/'                    ############ change it to your own location #########
 if noise_type == 'EOG':
   EEG_all = np.load( file_location + 'EEG_all_epochs.npy')                              
   noise_all = np.load( file_location + 'EOG_all_epochs.npy') 
