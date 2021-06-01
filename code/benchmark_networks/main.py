@@ -107,3 +107,7 @@ np.save(result_location +'/'+ foldername + '/'+ str(i)  +'/'+ "nn_output" + '/'+
 if saved_model is not None:
   path = os.path.join(result_location, foldername, str(i), "denoise_model")
   tf.keras.models.save_model(saved_model, path)
+
+"""
+test
+"""
