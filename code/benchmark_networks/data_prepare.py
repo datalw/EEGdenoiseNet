@@ -22,10 +22,6 @@ def random_signal(signal,combin_num):
 
     return  random_result
         
-
-
-
-
 def prepare_data(EEG_all, noise_all, combin_num, train_per, noise_type):
     # Here we use eeg and noise signal to generate scale transed training, validation, test signal
     EEG_all_random = np.squeeze(random_signal(signal = EEG_all, combin_num = 1))
