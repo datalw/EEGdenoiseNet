@@ -1,6 +1,4 @@
-import sklearn.model_selection as ms
 import numpy as np
-import scipy.io as sio
 import math
 # Author: Haoming Zhang
 #The code here not only include data importing, but also data standardization and the generation of analog noise signals
@@ -24,10 +22,6 @@ def random_signal(signal,combin_num):
 
     return  random_result
         
-
-
-
-
 def prepare_data(EEG_all, noise_all, combin_num, train_per, noise_type):
     # Here we use eeg and noise signal to generate scale transed training, validation, test signal
     EEG_all_random = np.squeeze(random_signal(signal = EEG_all, combin_num = 1))
