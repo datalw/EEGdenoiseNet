@@ -144,7 +144,7 @@ def train(model, noiseEEG,EEG, noiseEEG_val, EEG_val, epochs, batch_size,optimiz
             print('Best model has been saved')
         
         if saved_model is None:
-            print("Model not saved, hence: None.")
+            print("Model after epoch {} is still None.".format(epoch))
 
         print ('Epoch #: {}/{}, Time taken: {} secs,\n Grads: mse= {},\n Losses: train_mse= {}, val_mse={}'\
                      .format(epoch+1,epochs,time.time()-start , mse_grads,  train_mse, val_mse))
